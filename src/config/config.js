@@ -1,5 +1,3 @@
-import BoardPlugin from 'phaser3-rex-plugins/plugins/board-plugin.js';
-
 export default {
     type: Phaser.AUTO,
     width: 960,
