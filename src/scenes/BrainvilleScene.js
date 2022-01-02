@@ -18,7 +18,9 @@ export default class BrainvilleScene extends Phaser.Scene {
 
         // Load world stuff
         this.load.image('background', 'assets/images/background.png');
-    }
+        this.load.audio('welcome-to-brainville', '/assets/audio/Welcome to brainville.wav');
+        this.load.audio('welcome-to-brainville', '/assets/audio/welcome to china town 2.wav');
+        this.load.audio('welcome-to-brainville', '/assets/audio/welcome to da circus.wav');    }
 
     create() {
         /**
@@ -49,6 +51,11 @@ export default class BrainvilleScene extends Phaser.Scene {
             repeat: 0
         });
 
+        /**
+         * Load welcome to brainville song
+         */
+        var brainvilleSong = this.sound.add('welcome-to-brainville');
+        brainvilleSong.play();
         // Load the cursor keys
         this.cursors = this.input.keyboard.createCursorKeys();
         /**
