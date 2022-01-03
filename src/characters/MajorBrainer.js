@@ -6,7 +6,7 @@ export default class extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         this.setOrigin(0,0);
 
-        this.body.onWorldBounds = true;
+        this.body.setCollideWorldBounds();
 
     }
     preUpdate(time, delta) {

@@ -9,6 +9,7 @@ export default class BrainvilleScene extends Phaser.Scene {
     preload() {
         // Game properties
         this.physics.world.setBounds( 0, 0, 960, 600 );
+        this.cameras.main.setBounds(0, 0, 960, 600);
 
         // Load Spritesheets
         this.load.spritesheet('major', 'assets/images/major-brainer-walk-anim.png', { frameWidth: 96, frameHeight: 96 });
@@ -28,19 +29,17 @@ export default class BrainvilleScene extends Phaser.Scene {
          */
         let bg = this.add.image(0, 0, 'background');
         bg.setOrigin(0, 0);
-
-        // this.cameras.main.setZoom(2);
-        this.physics.world.setBounds( 0, 0, 960, 600 );
+        this.physics.world.setBounds( 0, 0, bg.width, bg.height );
 
         // Generate animations
         this.anims.create({
             key: 'stop',
             frames: this.anims.generateFrameNumbers('major', { frames: [0] }),
-            frameRate: 16
+            frameRate: 0
         });
         this.anims.create({
             key: 'walk',
-            frames: this.anims.generateFrameNumbers('major', { frames: [0,1,2,3,4,5,6,7,8,9,10,11,12,0] }),
+            frames: this.anims.generateFrameNumbers('major', { frames: [0,1,2,3,4,5,6,7,8,9,10,11,0] }),
             frameRate: 16,
             repeat: 0
         });
@@ -55,11 +54,11 @@ export default class BrainvilleScene extends Phaser.Scene {
          * Load welcome to brainville song
          */
         var brainvilleSong = this.sound.add('welcome-to-brainville');
-        brainvilleSong.play();
+        // brainvilleSong.play();
         // Load the cursor keys
         this.cursors = this.input.keyboard.createCursorKeys();
         /**
-         * Character Loading
+         * Character/World Loading
          */
         this._loadWorld(this.cache.json.get('world-init'), this);
     }
