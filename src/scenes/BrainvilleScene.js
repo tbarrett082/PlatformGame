@@ -8,28 +8,44 @@ export default class BrainvilleScene extends Phaser.Scene {
 
     preload() {
         // Game properties
-        this.physics.world.setBounds( 0, 0, 960, 600 );
-        this.cameras.main.setBounds(0, 0, 960, 600);
+        this.physics.world.setBounds( 0, 0, 5000, 600 );
 
         // Load Spritesheets
-        this.load.spritesheet('major', 'assets/images/major-brainer-walk-anim.png', { frameWidth: 96, frameHeight: 96 });
+        this.load.spritesheet('major', 'assets/images/major-brainer-walk-anim.png', { frameWidth: 64, frameHeight: 96 });
+
+        //Load Tilemaps
+        this.load.tilemapTiledJSON('street-map', 'assets/tilemaps/street-map.json');
+
+        //Load tilesets
+        this.load.image('street-tiles', 'assets/tilesets/tileset-street.png');
 
         //Load Json for initial stat
         this.load.json('world-init', 'data/world-load-01.json');
 
         // Load world stuff
-        this.load.image('background', 'assets/images/background.png');
-        this.load.audio('welcome-to-brainville', '/assets/audio/Welcome to brainville.wav');
-        this.load.audio('welcome-to-brainville', '/assets/audio/welcome to china town 2.wav');
-        this.load.audio('welcome-to-brainville', '/assets/audio/welcome to da circus.wav');    }
+        this.load.image('background', 'assets/images/background1.png');
+        this.load.audio('welcome-to-brainville', 'assets/audio/Welcome to brainville.wav');
+        this.load.audio('welcome-to-brainville', 'assets/audio/welcome to china town 2.wav');
+        this.load.audio('welcome-to-brainville', 'assets/audio/welcome to da circus.wav');    }
 
     create() {
+        // Add background and set camera to bounds of image size
+        let bg = this.add.image(0, 0, 'background').setScrollFactor(0).setOrigin(0,0);
+        this.cameras.main.setBounds(0, 0, 2000, bg.displayHeight);
+        
         /**
          * Tilemap Data
          */
-        let bg = this.add.image(0, 0, 'background');
-        bg.setOrigin(0, 0);
-        this.physics.world.setBounds( 0, 0, bg.width, bg.height );
+        var platformMap = this.make.tilemap({key: 'street-map'});
+        var concreteTileset = platformMap.addTilesetImage('street-tileset', 'street-tiles');
+
+        /**
+         * Tilemap creation
+         */
+        var streetPositionY = this.physics.world.bounds.bottom - (platformMap.height * platformMap.tileHeight); 
+        console.log(streetPositionY);
+        this.platforms = platformMap.createLayer('Tile Layer 1', concreteTileset, 0, streetPositionY);
+        this.platforms.setCollisionByExclusion(-1, true);
 
         // Generate animations
         this.anims.create({
@@ -41,7 +57,7 @@ export default class BrainvilleScene extends Phaser.Scene {
             key: 'walk',
             frames: this.anims.generateFrameNumbers('major', { frames: [0,1,2,3,4,5,6,7,8,9,10,11,0] }),
             frameRate: 16,
-            repeat: 0
+            repeat: -1
         });
         this.anims.create({
             key: 'walk-backwards',
@@ -77,12 +93,13 @@ export default class BrainvilleScene extends Phaser.Scene {
     }
 
     _handleInput() {
+        var position;
         if (this.cursors.left.isDown) {
-            this.major.move(-1);
+            position = this.major.move(-1);
         } else if (this.cursors.right.isDown) {
-            this.major.move(1);
+            position =this.major.move(1);
         } else {
-            this.major.move(0);
+            position = this.major.move(0);
         }
     }
 }
