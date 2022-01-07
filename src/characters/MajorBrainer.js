@@ -39,4 +39,7 @@ export default class extends Phaser.Physics.Arcade.Sprite {
 
         return this.body.position.x;
     }
+
+    shootBullet(x, y) {
+    }
 }

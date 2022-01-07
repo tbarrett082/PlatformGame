@@ -1,5 +1,6 @@
 import 'phaser';
 import MajorBrainer from '../characters/MajorBrainer';
+import Bullet from '../shooting/Bullet';
 
 export default class BrainvilleScene extends Phaser.Scene {
     constructor() {
@@ -26,7 +27,9 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.load.image('background', 'assets/images/background1.png');
         this.load.audio('welcome-to-brainville', 'assets/audio/Welcome to brainville.wav');
         this.load.audio('welcome-to-brainville', 'assets/audio/welcome to china town 2.wav');
-        this.load.audio('welcome-to-brainville', 'assets/audio/welcome to da circus.wav');    }
+        this.load.audio('welcome-to-brainville', 'assets/audio/welcome to da circus.wav');
+        this.load.image('bullet', 'assets/images/bullet.png');
+    }
 
     create() {
         // Add background and set camera to bounds of image size
@@ -71,8 +74,11 @@ export default class BrainvilleScene extends Phaser.Scene {
          */
         var brainvilleSong = this.sound.add('welcome-to-brainville');
         // brainvilleSong.play();
-        // Load the cursor keys
+
+        // Load the keyboard keys
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.xKey = this.input.keyboard.addKey('X');
+
         /**
          * Character/World Loading
          */
@@ -80,7 +86,7 @@ export default class BrainvilleScene extends Phaser.Scene {
     }
 
     update() {
-        this._handleInput();
+        this._addEvents();
     }
 
     init(data) {
@@ -92,8 +98,10 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.major);
     }
 
-    _handleInput() {
+    _addEvents() {
         var position;
+
+        // Set Left/Right keyboard for movement
         if (this.cursors.left.isDown) {
             position = this.major.move(-1);
         } else if (this.cursors.right.isDown) {
@@ -101,5 +109,15 @@ export default class BrainvilleScene extends Phaser.Scene {
         } else {
             position = this.major.move(0);
         }
+
+        // Set X keyboard input for shooting
+        if (this.xKey.isDown) {
+            this._shootBullet();
+        }
+    }
+
+    _shootBullet() {
+        var bullet = new Bullet(this, 0, 0);
+        bullet.fire(this.major.x, this.major.y -20);
     }
 }
