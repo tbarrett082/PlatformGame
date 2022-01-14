@@ -2,17 +2,23 @@ import 'phaser';
 import MajorBrainer from '../characters/MajorBrainer';
 import Bullet from '../shooting/Bullet';
 
+const Delay = (ms) => {
+    return new Promise(res => setTimeout(res, ms));
+}
+
 export default class BrainvilleScene extends Phaser.Scene {
     constructor() {
         super();
+        this.shotCount = 0;
     }
 
     preload() {
         // Game properties
-        this.physics.world.setBounds( 0, 0, 5000, 600 );
+        this.physics.world.setBounds(0, 0, 2000, 600);
 
         // Load Spritesheets
         this.load.spritesheet('major', 'assets/images/major-brainer-walk-anim.png', { frameWidth: 64, frameHeight: 96 });
+        this.load.spritesheet('major-shoot', 'assets/images/major-brainer-walk-shoot.png', {frameWidth: 64, frameHeight: 96});
 
         //Load Tilemaps
         this.load.tilemapTiledJSON('street-map', 'assets/tilemaps/street-map.json');
@@ -29,23 +35,24 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.load.audio('welcome-to-brainville', 'assets/audio/welcome to china town 2.wav');
         this.load.audio('welcome-to-brainville', 'assets/audio/welcome to da circus.wav');
         this.load.image('bullet', 'assets/images/bullet.png');
+        this.load.image('nsx', 'assets/images/nsx.png');
     }
 
     create() {
         // Add background and set camera to bounds of image size
-        let bg = this.add.image(0, 0, 'background').setScrollFactor(0).setOrigin(0,0);
+        let bg = this.add.image(0, 0, 'background').setScrollFactor(0).setOrigin(0, 0);
         this.cameras.main.setBounds(0, 0, 2000, bg.displayHeight);
-        
+
         /**
          * Tilemap Data
          */
-        var platformMap = this.make.tilemap({key: 'street-map'});
+        var platformMap = this.make.tilemap({ key: 'street-map' });
         var concreteTileset = platformMap.addTilesetImage('street-tileset', 'street-tiles');
 
         /**
          * Tilemap creation
          */
-        var streetPositionY = this.physics.world.bounds.bottom - (platformMap.height * platformMap.tileHeight); 
+        var streetPositionY = this.physics.world.bounds.bottom - (platformMap.height * platformMap.tileHeight);
         console.log(streetPositionY);
         this.platforms = platformMap.createLayer('Tile Layer 1', concreteTileset, 0, streetPositionY);
         this.platforms.setCollisionByExclusion(-1, true);
@@ -58,13 +65,30 @@ export default class BrainvilleScene extends Phaser.Scene {
         });
         this.anims.create({
             key: 'walk',
-            frames: this.anims.generateFrameNumbers('major', { frames: [0,1,2,3,4,5,6,7,8,9,10,11,0] }),
+            frames: this.anims.generateFrameNumbers('major', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0] }),
             frameRate: 16,
             repeat: -1
         });
         this.anims.create({
             key: 'walk-backwards',
-            frames: this.anims.generateFrameNumbers('major', { frames: [0, 1, 2, 3,0] }),
+            frames: this.anims.generateFrameNumbers('major', { frames: [0, 1, 2, 3, 0] }),
+            frameRate: 8,
+            repeat: 0
+        });
+        this.anims.create({
+            key: 'stop-shoot',
+            frames: this.anims.generateFrameNumbers('major-shoot', { frames: [0] }),
+            frameRate: 0
+        });
+        this.anims.create({
+            key: 'walk-shoot',
+            frames: this.anims.generateFrameNumbers('major-shoot', { frames: [0, 1, 2, 3, 0] }),
+            frameRate: 8,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'walk-backwards-shoot',
+            frames: this.anims.generateFrameNumbers('major-shoot', { frames: [0, 1, 2, 3, 0] }),
             frameRate: 8,
             repeat: 0
         });
@@ -73,7 +97,7 @@ export default class BrainvilleScene extends Phaser.Scene {
          * Load welcome to brainville song
          */
         var brainvilleSong = this.sound.add('welcome-to-brainville');
-        // brainvilleSong.play();
+        //brainvilleSong.play();
 
         // Load the keyboard keys
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -85,8 +109,8 @@ export default class BrainvilleScene extends Phaser.Scene {
         this._loadWorld(this.cache.json.get('world-init'), this);
     }
 
-    update() {
-        this._addEvents();
+    update(time, delta) {
+        this._addEvents(time);
     }
 
     init(data) {
@@ -94,30 +118,36 @@ export default class BrainvilleScene extends Phaser.Scene {
     }
 
     _loadWorld(data) {
+        /**
+         * Decorations
+         */
+        this.add.image(data.car.x, data.car.y, 'nsx').setScale(0.2).setOrigin(0,0);
         this.major = new MajorBrainer(this, data.major.x, data.major.y, 'major');
         this.cameras.main.startFollow(this.major);
     }
 
-    _addEvents() {
+    async _addEvents(time) {
         var position;
 
         // Set Left/Right keyboard for movement
         if (this.cursors.left.isDown) {
             position = this.major.move(-1);
         } else if (this.cursors.right.isDown) {
-            position =this.major.move(1);
+            position = this.major.move(1);
         } else {
             position = this.major.move(0);
         }
-
-        // Set X keyboard input for shooting
         if (this.xKey.isDown) {
-            this._shootBullet();
+            if (this.major.nextShot < this.time.now) {
+                this._shootBullet();
+                this.major.nextShot = this.time.now + this.major.fireRate;
+            }
         }
     }
 
-    _shootBullet() {
+    async _shootBullet() {
         var bullet = new Bullet(this, 0, 0);
-        bullet.fire(this.major.x, this.major.y -20);
+        bullet.fire(this.major.x + 30, this.major.y - 15);
+        this.shotCount += 1;
     }
 }

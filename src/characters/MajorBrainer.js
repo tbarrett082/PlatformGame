@@ -4,7 +4,9 @@ export default class extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, tag, 2);
 
         this.scene = scene;
-        
+        this.fireRate = 500;
+        this.nextShot = 0;
+
         // Add to game and physics
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -28,18 +30,30 @@ export default class extends Phaser.Physics.Arcade.Sprite {
 
         // Animations
         if (this.body.velocity.x > 0) {
-            (!this.anims.isPlaying || this.anims.key !== 'walk') &&
-                this.anims.play('walk', true); // here
+            if (this.scene.xKey.isDown) {
+                (!this.anims.isPlaying || this.anims.key !== 'walk-shoot') &&
+                    this.anims.play('walk-shoot', true);
+            } else {
+
+                (!this.anims.isPlaying || this.anims.key !== 'walk') &&
+                    this.anims.play('walk', true);
+            }
         } else if (this.body.velocity.x < 0) {
-            (!this.anims.isPlaying || this.anims.key !== 'walk-backwards') &&
-                this.anims.play('walk-backwards', true); // and here
+            if (this.scene.xKey.isDown) {
+                (!this.anims.isPlaying || this.anims.key !== 'walk-backwards-shoot') &&
+                    this.anims.play('walk-backwards-shoot', true);
+            } else {
+                (!this.anims.isPlaying || this.anims.key !== 'walk-backwards') &&
+                    this.anims.play('walk-backwards', true);
+            }
         } else {
-            this.anims.play('stop', false);
+            if (this.scene.xKey.isDown) {
+                this.anims.play('stop-shoot', true);
+            } else {
+                this.anims.play('stop', false);
+            }
         }
 
         return this.body.position.x;
-    }
-
-    shootBullet(x, y) {
     }
 }
