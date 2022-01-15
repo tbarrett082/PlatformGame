@@ -39,6 +39,9 @@ export default class BrainvilleScene extends Phaser.Scene {
     }
 
     create() {
+        // Fade in the scene
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
+        
         // Add background and set camera to bounds of image size
         let bg = this.add.image(0, 0, 'background').setScrollFactor(0).setOrigin(0, 0);
         this.cameras.main.setBounds(0, 0, 2000, bg.displayHeight);
