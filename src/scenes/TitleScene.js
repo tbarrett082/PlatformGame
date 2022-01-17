@@ -11,9 +11,9 @@ export default class TitleScene extends Phaser.Scene {
         this.add.image(0, 0, 'title-screen').setOrigin(0, 0);
 
         //Buttons
-        var text = this.add.text(150, 450, 'Play');
-        text.setInteractive({ useHandCursor: true });
-        text.on('pointerdown', () => this._clickButton());
+        var play = this.add.text(150, 450, 'Play');
+        play.setInteractive({ useHandCursor: true });
+        play.on('pointerdown', () => this._clickButton());
     }
 
     _clickButton() {

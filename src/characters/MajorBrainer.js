@@ -53,7 +53,12 @@ export default class extends Phaser.Physics.Arcade.Sprite {
                 this.anims.play('stop', false);
             }
         }
-
         return this.body.position.x;
+    }
+
+    jump() {
+        if (this.body.blocked.down) {
+            this.setVelocityY(-300);
+        }
     }
 }

@@ -14,50 +14,67 @@ export default class BrainvilleScene extends Phaser.Scene {
 
     preload() {
         // Game properties
-        this.physics.world.setBounds(0, 0, 2000, 600);
+        this.physics.world.setBounds(0, 0, 5040, 600);
 
         // Load Spritesheets
         this.load.spritesheet('major', 'assets/images/major-brainer-walk-anim.png', { frameWidth: 64, frameHeight: 96 });
         this.load.spritesheet('major-shoot', 'assets/images/major-brainer-walk-shoot.png', {frameWidth: 64, frameHeight: 96});
 
         //Load Tilemaps
-        this.load.tilemapTiledJSON('street-map', 'assets/tilemaps/street-map.json');
+        this.load.tilemapTiledJSON('street-map', 'assets/tilemaps/Street.json');
 
         //Load tilesets
         this.load.image('street-tiles', 'assets/tilesets/tileset-street.png');
+        this.load.image('middleground-tiles', 'assets/tilesets/building-1.png');
+        this.load.image('concrete-wall-tiles', 'assets/tilesets/concrete-wall.png');
+        this.load.image('bush-1-tiles', 'assets/tilesets/bushes-1.png');
 
         //Load Json for initial stat
         this.load.json('world-init', 'data/world-load-01.json');
 
         // Load world stuff
         this.load.image('background', 'assets/images/background1.png');
-        this.load.audio('welcome-to-brainville', 'assets/audio/Welcome to brainville.wav');
-        this.load.audio('welcome-to-brainville', 'assets/audio/welcome to china town 2.wav');
-        this.load.audio('welcome-to-brainville', 'assets/audio/welcome to da circus.wav');
+        this.load.image('tree-city-background', 'assets/images/TreeCityBackground.png');
         this.load.image('bullet', 'assets/images/bullet.png');
         this.load.image('nsx', 'assets/images/nsx.png');
+
+        //Load Audio
+        this.load.audio('welcome-to-brainville', 'assets/audio/Welcome to brainville.wav');
+        this.load.audio('welcome-to-china-town', 'assets/audio/welcome to china town 2.wav');
+        this.load.audio('glock-shot', 'assets/audio/Glock-2.wav');
+
     }
 
     create() {
         // Fade in the scene
         this.cameras.main.fadeIn(1000, 0, 0, 0);
-        
+
         // Add background and set camera to bounds of image size
         let bg = this.add.image(0, 0, 'background').setScrollFactor(0).setOrigin(0, 0);
-        this.cameras.main.setBounds(0, 0, 2000, bg.displayHeight);
+        let tcb = this.add.image(0, 0, 'tree-city-background').setOrigin(0, 0).setScrollFactor(0.5);
+        this.cameras.main.setBounds(0, 0, 5040, bg.displayHeight);
 
         /**
          * Tilemap Data
          */
         var platformMap = this.make.tilemap({ key: 'street-map' });
-        var concreteTileset = platformMap.addTilesetImage('street-tileset', 'street-tiles');
+        var concreteTileset = platformMap.addTilesetImage('tileset-street', 'street-tiles');
+        var buildingTileset = platformMap.addTilesetImage('building-1', 'middleground-tiles');
+        var wallTileset = platformMap.addTilesetImage('concrete-wall', 'concrete-wall-tiles');
+        var bushTileset = platformMap.addTilesetImage('bushes-1', 'bush-1-tiles');
 
         /**
          * Tilemap creation
          */
-        var streetPositionY = this.physics.world.bounds.bottom - (platformMap.height * platformMap.tileHeight);
-        console.log(streetPositionY);
-        this.platforms = platformMap.createLayer('Tile Layer 1', concreteTileset, 0, streetPositionY);
+        var streetPositionYPlatform = this.physics.world.bounds.bottom - (platformMap.height * platformMap.tileHeight);
+        console.log(streetPositionYPlatform);
+        // create middleground layers
+        platformMap.createLayer('Building', buildingTileset, 0, streetPositionYPlatform -237);
+        platformMap.createLayer('concrete-wall', wallTileset, 0, streetPositionYPlatform -16);
+        platformMap.createLayer('trees-front', bushTileset, 0, streetPositionYPlatform -48);
+
+        //Create street
+        this.platforms = platformMap.createLayer('Street', concreteTileset, 0, streetPositionYPlatform);
         this.platforms.setCollisionByExclusion(-1, true);
 
         // Generate animations
@@ -100,7 +117,7 @@ export default class BrainvilleScene extends Phaser.Scene {
          * Load welcome to brainville song
          */
         var brainvilleSong = this.sound.add('welcome-to-brainville');
-        //brainvilleSong.play();
+        // brainvilleSong.play();
 
         // Load the keyboard keys
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -140,6 +157,13 @@ export default class BrainvilleScene extends Phaser.Scene {
         } else {
             position = this.major.move(0);
         }
+
+        // Set Up key for jump
+        if (this.cursors.up.isDown) {
+            this.major.jump();
+        }
+
+        // Set the X key to cause shooting animation/shooting logic
         if (this.xKey.isDown) {
             if (this.major.nextShot < this.time.now) {
                 this._shootBullet();
@@ -152,5 +176,8 @@ export default class BrainvilleScene extends Phaser.Scene {
         var bullet = new Bullet(this, 0, 0);
         bullet.fire(this.major.x + 30, this.major.y - 15);
         this.shotCount += 1;
+
+        var glockShot = this.sound.add('glock-shot', {volume: 0.15});
+        glockShot.play();
     }
 }
