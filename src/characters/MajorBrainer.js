@@ -12,6 +12,9 @@ export default class extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         this.body.setCollideWorldBounds();
 
+        // Set the hitbox size
+        this.body.setSize(this.width/this.scale.x, this.height/this.scale.y);
+
         // Collisions
         scene.physics.add.collider(this, scene.platforms);
 
@@ -34,7 +37,6 @@ export default class extends Phaser.Physics.Arcade.Sprite {
                 (!this.anims.isPlaying || this.anims.key !== 'walk-shoot') &&
                     this.anims.play('walk-shoot', true);
             } else {
-
                 (!this.anims.isPlaying || this.anims.key !== 'walk') &&
                     this.anims.play('walk', true);
             }

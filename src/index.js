@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import config from './config/config';
 import BrainvilleScene from './scenes/BrainvilleScene';
+import OpeningCutscene from './scenes/OpeningCutscene';
 import TitleScene from './scenes/TitleScene';
 
 // const game = new Phaser.Game(config);
@@ -11,6 +12,7 @@ class Game extends Phaser.Game {
 
         // Add Brainville scene
         this.scene.add('Title', TitleScene);
+        this.scene.add('OpeningScene', OpeningCutscene);
         this.scene.add('Brainville', BrainvilleScene);
         this.scene.start('Title');
     }
