@@ -115,9 +115,11 @@ export default class BrainvilleScene extends Phaser.Scene {
         /**
          * Decorations
          */
-        this.add.image(data.car.x, data.car.y, 'nsx').setScale(0.2).setOrigin(0, 0);
         this.major = new MajorBrainer(this, data.major.x, data.major.y, 'major');
         this.cameras.main.startFollow(this.major);
+
+        //NSX load
+        this.add.image(data.car.x, data.car.y, 'nsx').setScale(0.4).setOrigin(0, 0);
 
         /** 
          * Mini Brains

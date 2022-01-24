@@ -15,46 +15,49 @@ export default class OpeningCutscene extends Phaser.Scene {
 
     create() {
 
+        // Fade in the scene
+        this.cameras.main.fadeIn(2000, 0, 0, 0);
+
         this.anims.create({
             key: 'title-scene-play-1',
             frames: this.anims.generateFrameNumbers('cut-scene-1', { start: 0, end: 26 }),
-            frameRate: 16,
+            frameRate: 12,
             repeat: 0
         });
         this.anims.create({
             key: 'title-scene-play-2',
             frames: this.anims.generateFrameNumbers('cut-scene-2', { start: 0, end: 26 }),
-            frameRate: 16,
+            frameRate: 12,
             repeat: 0
         });
         this.anims.create({
             key: 'title-scene-play-3',
             frames: this.anims.generateFrameNumbers('cut-scene-3', { start: 0, end: 26 }),
-            frameRate: 16,
+            frameRate: 12,
             repeat: 0
         });
         this.anims.create({
             key: 'title-scene-play-4',
             frames: this.anims.generateFrameNumbers('cut-scene-4', { start: 0, end: 26 }),
-            frameRate: 16,
+            frameRate: 12,
             repeat: 0
         });
         this.anims.create({
             key: 'title-scene-play-5',
             frames: this.anims.generateFrameNumbers('cut-scene-5', { start: 0, end: 26 }),
-            frameRate: 16,
+            frameRate: 12,
             repeat: 0
         });
         this.anims.create({
             key: 'title-scene-play-6',
             frames: this.anims.generateFrameNumbers('cut-scene-6', { start: 0, end: 26 }),
-            frameRate: 8,
+            frameRate: 12,
             repeat: 0
         });
         this.anims.create({
             key: 'title-scene-play-7',
             frames: this.anims.generateFrameNumbers('cut-scene-7', { start: 0, end: 26 }),
-            frameRate: 16,
+            frameRate: 12,
             repeat: 0
         });
 
@@ -96,6 +99,14 @@ export default class OpeningCutscene extends Phaser.Scene {
         cutsceneSprite6.on('animationcomplete-title-scene-play-6', function () {
             cutsceneSprite6.destroy;
             cutsceneSprite7.setVisible(true).play('title-scene-play-7');
+        }, this);
+
+        cutsceneSprite7.on('animationcomplete-title-scene-play-7', function () {
+            cutsceneSprite7.destroy;
+            this.cameras.main.fadeOut(1000, 0, 0, 0);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                this.scene.start('Brainville');
+            })
         }, this);
     }
 }
