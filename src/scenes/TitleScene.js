@@ -19,7 +19,7 @@ export default class TitleScene extends Phaser.Scene {
     _clickButton() {
         this.cameras.main.fadeOut(1000, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            this.scene.start('OpeningScene');
+            this.scene.start('Brainville');
         })
     }
 

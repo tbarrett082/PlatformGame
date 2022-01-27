@@ -90,7 +90,7 @@ export default class BrainvilleScene extends Phaser.Scene {
          * Load welcome to brainville song
          */
         var brainvilleSong = this.sound.add('welcome-to-brainville');
-        // /brainvilleSong.play();
+        // brainvilleSong.play();
 
         // Load the keyboard keys
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -119,7 +119,7 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.major);
 
         //NSX load
-        this.add.image(data.car.x, data.car.y, 'nsx').setScale(0.4).setOrigin(0, 0);
+        this.add.image(data.car.x, data.car.y, 'nsx').setScale(0.35).setOrigin(0, 0);
 
         /** 
          * Mini Brains
