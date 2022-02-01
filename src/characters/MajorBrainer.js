@@ -6,6 +6,7 @@ export default class extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.fireRate = 500;
         this.nextShot = 0;
+        this.walking = false;
 
         // Add to game and physics
         scene.add.existing(this);
@@ -17,7 +18,7 @@ export default class extends Phaser.Physics.Arcade.Sprite {
 
         // Collisions
         scene.physics.add.collider(this, scene.platforms);
-
+        scene.physics.add.collider(this, scene.building3Platforms);
     }
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
@@ -55,12 +56,13 @@ export default class extends Phaser.Physics.Arcade.Sprite {
                 this.anims.play('stop', false);
             }
         }
+
         return this.body.position.x;
     }
 
     jump() {
         if (this.body.blocked.down) {
-            this.setVelocityY(-300);
+            this.setVelocityY(-400);
         }
     }
 }
