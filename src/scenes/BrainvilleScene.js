@@ -171,7 +171,7 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.graphics.visible = true;
         this.graphics.strokeTriangleShape(this.slopeTriangle1);
 
-        this.roadFlat1 = this.physics.add.sprite(6589, 1660, 'road-flat-1').setOrigin(0, 0);
+        this.roadFlat1 = this.physics.add.sprite(6588, 1660, 'road-flat-1').setOrigin(0, 0);
         this.roadFlat1.body.setImmovable(true);
         this.roadFlat1.body.setAllowGravity(false);
         this.roadFlat1.body.checkCollision.left = false;
@@ -189,31 +189,31 @@ export default class BrainvilleScene extends Phaser.Scene {
             1553);
             this.graphics.strokeTriangleShape(this.slopeTriangle2);
 
-        this.roadFlat2 = this.physics.add.sprite(7108, 1552, 'road-flat-2').setOrigin(0, 0);
+        this.roadFlat2 = this.physics.add.sprite(7107, 1553, 'road-flat-2').setOrigin(0, 0);
         this.roadFlat2.body.setImmovable(true);
         this.roadFlat2.body.setAllowGravity(false);
         this.roadFlat2.body.checkCollision.left = false;
         this.roadFlat2.body.checkCollision.right = false;
 
-        this.roadSlope3 = this.physics.add.sprite(7184, 1464, 'road-slope-3').setOrigin(0, 0);
+        this.roadSlope3 = this.physics.add.sprite(7184, 1465, 'road-slope-3').setOrigin(0, 0);
         this.roadSlope3.body.setImmovable(true);
         this.roadSlope3.body.setAllowGravity(false);
         this.slopeTriangle3 = new Phaser.Geom.Triangle(
             7184,
-            1464 + this.roadSlope3.height,
+            1465 + this.roadSlope3.height,
             7184 + this.roadSlope3.width,
-            1464 + this.roadSlope3.height,
+            1465 + this.roadSlope3.height,
             7184 + this.roadSlope3.width,
-            1464);
+            1465);
             this.graphics.strokeTriangleShape(this.slopeTriangle3);
 
-        this.roadFlat3 = this.physics.add.sprite(7564, 1462, 'road-flat-3').setOrigin(0, 0);
+        this.roadFlat3 = this.physics.add.sprite(7564, 1464, 'road-flat-3').setOrigin(0, 0);
         this.roadFlat3.body.setImmovable(true);
         this.roadFlat3.body.setAllowGravity(false);
         this.roadFlat3.body.checkCollision.left = false;
         this.roadFlat3.body.checkCollision.right = false;
 
-        this.roadSlope4 = this.physics.add.sprite(7803, 1344, 'road-slope-4').setOrigin(0, 0);
+        this.roadSlope4 = this.physics.add.sprite(7803, 1345, 'road-slope-4').setOrigin(0, 0);
         this.roadSlope4.body.setImmovable(true);
         this.roadSlope4.body.setAllowGravity(false);
         this.slopeTriangle4 = new Phaser.Geom.Triangle(
@@ -225,7 +225,7 @@ export default class BrainvilleScene extends Phaser.Scene {
             1344);
             this.graphics.strokeTriangleShape(this.slopeTriangle4);
 
-        this.roadFlat4 = this.physics.add.sprite(8086, 1343, 'road-flat-4').setOrigin(0, 0);
+        this.roadFlat4 = this.physics.add.sprite(8086, 1345, 'road-flat-4').setOrigin(0, 0);
         this.roadFlat4.body.setImmovable(true);
         this.roadFlat4.body.setAllowGravity(false);
         this.roadFlat4.body.checkCollision.left = false;
