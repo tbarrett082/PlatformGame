@@ -55,6 +55,7 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.load.image('road-slope-2', 'assets/images/road-slope-2.png');
         this.load.image('road-slope-3', 'assets/images/road-slope/road-slope-3.png');
         this.load.image('road-slope-4', 'assets/images/road-slope/road-slope-4.png');
+        this.load.image('road-slope-under', 'assets/images/road-slope/road-slope-under.png');
 
         //Load Audio
         this.load.audio('welcome-to-brainville', 'assets/audio/Welcome to brainville.wav');
@@ -231,8 +232,10 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.roadFlat4.body.checkCollision.left = false;
         this.roadFlat4.body.checkCollision.right = false;
 
-        this.graphics.clear();
+        this.add.image(5947, 802, 'road-slope-under').setOrigin(0, 0);
 
+        // Enable triangle graphics if stuff gets buggy
+        this.graphics.clear();
     }
 
     async _addEvents(time) {
