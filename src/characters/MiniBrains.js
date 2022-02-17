@@ -10,7 +10,7 @@ export default class MiniBrainGroup extends Phaser.Physics.Arcade.Group {
             frameQuantity: size,
             active: false,
             visible: false,
-            key: 'mini-brain -slide'
+            key: 'mini-brain-slide'
         })
     }
 

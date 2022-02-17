@@ -40,4 +40,24 @@ export default function createAnimations() {
         frameRate: 8,
         repeat: -1
     });
+    this.anims.create({
+        key: 'cop-car',
+        frames: this.anims.generateFrameNumbers('cop-car', { frames: [0, 1, 2, 3, 4, 5] }),
+        frameRate: 10,
+        repeat: -1,
+    });
+
+    this.anims.create({
+        key: 'brain-cop-1-stop',
+        frames: this.anims.generateFrameNumbers('brain-cop-1', { frames: [0] }),
+        frameRate: 10,
+        repeat: -1,
+    });
+
+    this.anims.create({
+        key: 'brain-cop-1-walk',
+        frames: this.anims.generateFrameNumbers('brain-cop-1', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }),
+        frameRate: 10,
+        repeat: -1,
+    });
 }

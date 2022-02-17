@@ -1,4 +1,5 @@
 import 'phaser';
+import BrainCop1Group from '../characters/BrainCop1';
 import MajorBrainer from '../characters/MajorBrainer';
 import MiniBrainGroup from '../characters/MiniBrains';
 import createAnimations from '../config/animations';
@@ -22,17 +23,18 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.load.spritesheet('major', 'assets/images/major-brainer-walk-anim.png', { frameWidth: 64, frameHeight: 96 });
         this.load.spritesheet('major-shoot', 'assets/images/major-brainer-walk-shoot.png', { frameWidth: 64, frameHeight: 96 });
         this.load.spritesheet('mini-brain-slide', 'assets/images/mini-brain-move-anim.png', { frameWidth: 16, frameHeight: 14 });
+        this.load.spritesheet('cop-car', 'assets/images/spritesheets/cop-car-Sheet.png', {frameWidth: 256, frameHeight: 103});
+        this.load.spritesheet('brain-cop-1', 'assets/images/spritesheets/brain-cop-1-Sheet.png', {frameWidth: 24, frameHeight: 47});
 
         //Load Tilemaps
         this.load.tilemapTiledJSON('street-map', 'assets/tilemaps/Street.json');
 
         //Load tilesets
         this.load.image('street-tiles', 'assets/tilesets/tileset-street.png');
-        this.load.image('middleground-tiles', 'assets/tilesets/building-1.png');
         this.load.image('concrete-wall-tiles', 'assets/tilesets/concrete-wall.png');
         this.load.image('bush-1-tiles', 'assets/tilesets/bushes-1.png');
         this.load.image('building-3-tiles', 'assets/tilesets/building-3-tiles.png');
-        this.load.image('building-4-tiles', 'assets/tilesets/building-4.png');
+        this.load.image('building-3-inside-tiles', 'assets/images/building-3-inside.png');
         this.load.image('invisi-layer-tiles', 'assets/tilesets/invisi-layer.png');
 
         //Load Json for initial stat
@@ -41,7 +43,6 @@ export default class BrainvilleScene extends Phaser.Scene {
         // Load world stuff
         this.load.image('background', 'assets/images/background1.png');
         this.load.image('tree-city-background', 'assets/images/TreeCityBackground2.png');
-        this.load.image('building-3-inside', 'assets/images/building-3-inside.png');
         this.load.image('bridge', 'assets/images/Bridge.png');
         this.load.image('bullet', 'assets/images/bullet.png');
         this.load.image('nsx', 'assets/images/nsx.png');
@@ -61,15 +62,23 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.load.audio('welcome-to-brainville', 'assets/audio/Welcome to brainville.wav');
         this.load.audio('welcome-to-china-town', 'assets/audio/welcome to china town 2.wav');
         this.load.audio('glock-shot', 'assets/audio/Glock-2.wav');
+        this.load.audio('boing', 'assets/audio/boing.wav');
     }
 
     create() {
+        // Add Graphics
+        this.graphics = this.add.graphics({
+            lineStyle: { width: 2, color: 0x00aa00 },
+            fillStyle: { color: 0xFFFFFF }
+        });
+
+        this.graphics.visible = true;
+
         // Fade in the scene
         this.cameras.main.fadeIn(1000, 0, 0, 0);
 
         // Add background and set camera to bounds of image size
         let bg = this.add.image(0, 0, 'background').setScrollFactor(0).setOrigin(0, 0);
-        this.add.image(2000, 0, 'building-3-inside').setOrigin(0, 0).setScrollFactor(0.5, 1);
         let tcb = this.add.image(0, 1200, 'tree-city-background').setOrigin(0, 0).setScrollFactor(0.5, 1);
         this.cameras.main.setBounds(0, 0, 15000, 1800);
 
@@ -81,6 +90,7 @@ export default class BrainvilleScene extends Phaser.Scene {
         var wallTileset = platformMap.addTilesetImage('concrete-wall', 'concrete-wall-tiles');
         var bushTileset = platformMap.addTilesetImage('bushes-1', 'bush-1-tiles');
         var building3Tileset = platformMap.addTilesetImage('building-3', 'building-3-tiles');
+        var building3InsideTileset = platformMap.addTilesetImage('building-3-inside', 'building-3-inside-tiles');
         var invisiLayerTileset = platformMap.addTilesetImage('invisi-layer', 'invisi-layer-tiles');
 
         /**
@@ -92,17 +102,21 @@ export default class BrainvilleScene extends Phaser.Scene {
         // create middleground layers
         platformMap.createLayer('concrete-wall', wallTileset, 0, streetPositionYPlatform - 16);
         platformMap.createLayer('trees-front', bushTileset, 0, streetPositionYPlatform - 48);
+        this.building3Layer = platformMap.createLayer('building-3-inside', building3InsideTileset, 0, streetPositionYPlatform);
+        this.building3Rectangle = new Phaser.Geom.Rectangle (
+            4896, this.physics.world.bounds.top,
+            767, 1800
+        );
+        this.graphics.strokeRect(this.building3Rectangle);
 
 
         //Create street
         this.platforms = platformMap.createLayer('Street', concreteTileset, 0, streetPositionYPlatform);
-        this.platforms.setCollisionByExclusion(-1, true);
-        this.building3Platforms = platformMap.createLayer('building-3', building3Tileset, 0, streetPositionYPlatform - 16).setScrollFactor(0.5, 1);
+        this.platforms.setCollisionBetween(6969, 7000, true);
+        this.building3Platforms = platformMap.createLayer('building-3', building3Tileset, 0, streetPositionYPlatform);
         this.building3Platforms.setCollisionByExclusion(-1, true);
-        this.invisiLayerPlatforms = platformMap.createLayer('invisi-layer', invisiLayerTileset, 0, streetPositionYPlatform - 16);
+        this.invisiLayerPlatforms = platformMap.createLayer('invisi-layer', invisiLayerTileset, 0, streetPositionYPlatform - 16).setVisible(false);
         this.invisiLayerPlatforms.setCollisionByExclusion(-1, true);
-
-
 
         // Generate animations
         var createAnims = createAnimations.bind(this);
@@ -112,6 +126,7 @@ export default class BrainvilleScene extends Phaser.Scene {
          * Create audio
          */
         var brainvilleSong = this.sound.add('welcome-to-brainville', { loop: true, seek: 13.689 });
+        this.boing = this.sound.add('boing');
         // brainvilleSong.play({seek: 13.689});
 
 
@@ -123,6 +138,7 @@ export default class BrainvilleScene extends Phaser.Scene {
          * Character/World Loading
          */
         this.miniBrains = new MiniBrainGroup(this);
+        this.brainCops1 = new BrainCop1Group(this);
         this._loadWorld(this.cache.json.get('world-init'), this);
     }
 
@@ -137,6 +153,19 @@ export default class BrainvilleScene extends Phaser.Scene {
     _loadWorld(data) {
 
         this.add.image(data.car.x, data.car.y, 'nsx').setScale(0.3).setOrigin(0, 0);
+        var copCar = this.add.sprite(data.copCar1.x, data.copCar1.y, 'cop-car').setOrigin(0, 0);
+        copCar.anims.play('cop-car', true);
+
+        this.copCarBody = new Phaser.GameObjects.Rectangle (
+            this,
+            data.copCar1.x + 110, data.copCar1.y + 65,
+            200, 75,
+            0x00aa00
+        );
+        this.physics.add.existing(this.copCarBody);
+        this.copCarBody.setActive(true);
+        this.copCarBody.body.setAllowGravity(false);
+        this.copCarBody.body.setImmovable(true);
         this._loadStreetSlope(this);
 
         //Create the player
@@ -149,6 +178,14 @@ export default class BrainvilleScene extends Phaser.Scene {
         var miniBrainPositions = data.miniBrains;
         this.miniBrains.init(miniBrainPositions.length);
         miniBrainPositions.forEach(function (obj) { this.miniBrains.startMiniBrain(obj.x, obj.y) }, this);
+
+        /**
+         * Brain Cop 1
+         */
+        var brainCop1Positions = data.brainCop1;
+        this.brainCops1.init(brainCop1Positions.length);
+        brainCop1Positions.forEach(function (obj) {this.brainCops1.startBrainCop(obj.x, obj.y) }, this);
+
     }
 
     _loadStreetSlope() {
@@ -163,14 +200,6 @@ export default class BrainvilleScene extends Phaser.Scene {
             1800,
             6000 + this.roadSlope.width,
             1800 - this.roadSlope.height);
-
-        this.graphics = this.add.graphics({
-            lineStyle: { width: 2, color: 0x00aa00 },
-            fillStyle: { color: 0xFFFFFF }
-        });
-
-        this.graphics.visible = true;
-        this.graphics.strokeTriangleShape(this.slopeTriangle1);
 
         this.roadFlat1 = this.physics.add.sprite(6588, 1660, 'road-flat-1').setOrigin(0, 0);
         this.roadFlat1.body.setImmovable(true);
@@ -188,7 +217,6 @@ export default class BrainvilleScene extends Phaser.Scene {
             1553 + this.roadSlope2.height,
             6840 + this.roadSlope2.width,
             1553);
-            this.graphics.strokeTriangleShape(this.slopeTriangle2);
 
         this.roadFlat2 = this.physics.add.sprite(7107, 1553, 'road-flat-2').setOrigin(0, 0);
         this.roadFlat2.body.setImmovable(true);
@@ -206,7 +234,6 @@ export default class BrainvilleScene extends Phaser.Scene {
             1465 + this.roadSlope3.height,
             7184 + this.roadSlope3.width,
             1465);
-            this.graphics.strokeTriangleShape(this.slopeTriangle3);
 
         this.roadFlat3 = this.physics.add.sprite(7564, 1464, 'road-flat-3').setOrigin(0, 0);
         this.roadFlat3.body.setImmovable(true);
@@ -224,7 +251,7 @@ export default class BrainvilleScene extends Phaser.Scene {
             1344 + this.roadSlope4.height,
             7803 + this.roadSlope4.width,
             1344);
-            this.graphics.strokeTriangleShape(this.slopeTriangle4);
+            
 
         this.roadFlat4 = this.physics.add.sprite(8086, 1345, 'road-flat-4').setOrigin(0, 0);
         this.roadFlat4.body.setImmovable(true);
@@ -233,9 +260,6 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.roadFlat4.body.checkCollision.right = false;
 
         this.add.image(5947, 802, 'road-slope-under').setOrigin(0, 0);
-
-        // Enable triangle graphics if stuff gets buggy
-        this.graphics.clear();
     }
 
     async _addEvents(time) {

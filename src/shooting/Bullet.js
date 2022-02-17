@@ -7,6 +7,8 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         this.body.setAllowGravity(false);
 
+        this.scene = scene;
+
         // Properties
         this.velocity = 1000;
 
@@ -26,7 +28,11 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
         this.body.reset(x, y);
         this.setActive(true);
         this.setVisible(true);
-        this.setVelocityX(this.velocity);
+        if(this.scene.major.flipX === true) {
+            this.setVelocityX(-this.velocity)
+        } else {
+            this.setVelocityX(this.velocity);
+        }
     }
 }
 

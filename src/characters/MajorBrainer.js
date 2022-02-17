@@ -6,6 +6,7 @@ export default class extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.fireRate = 500;
         this.nextShot = 0;
+        this.speed = 200;
 
         // Add to game and physics
         scene.add.existing(this);
@@ -16,6 +17,7 @@ export default class extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.collider(this, scene.platforms);
         scene.physics.add.collider(this, scene.building3Platforms);
         scene.physics.add.collider(this, scene.invisiLayerPlatforms);
+        scene.physics.add.collider(this, scene.copCarBody);
         scene.physics.add.collider(this, scene.roadFlat1);
         scene.physics.add.collider(this, scene.roadFlat2);
         scene.physics.add.collider(this, scene.roadFlat3);
@@ -30,11 +32,11 @@ export default class extends Phaser.Physics.Arcade.Sprite {
     }
 
     move(direction) {
-        const SPEED = 200;
-        this.setVelocityX(direction * SPEED);
+        this.setVelocityX(direction * this.speed);
 
         // Animations
         if (this.body.velocity.x > 0) {
+            this.setFlipX(false);
             if (this.scene.xKey.isDown) {
                 (!this.anims.isPlaying || this.anims.key !== 'walk-shoot') &&
                     this.anims.play('walk-shoot', true);
@@ -43,12 +45,13 @@ export default class extends Phaser.Physics.Arcade.Sprite {
                     this.anims.play('walk', true);
             }
         } else if (this.body.velocity.x < 0) {
+            this.setFlipX(true);
             if (this.scene.xKey.isDown) {
-                (!this.anims.isPlaying || this.anims.key !== 'walk-backwards-shoot') &&
-                    this.anims.play('walk-backwards-shoot', true);
+                (!this.anims.isPlaying || this.anims.key !== 'walk-shoot') &&
+                    this.anims.play('walk-shoot', true);
             } else {
-                (!this.anims.isPlaying || this.anims.key !== 'walk-backwards') &&
-                    this.anims.play('walk-backwards', true);
+                (!this.anims.isPlaying || this.anims.key !== 'walk') &&
+                    this.anims.play('walk', true);
             }
         } else {
             if (this.scene.xKey.isDown) {
@@ -68,7 +71,6 @@ export default class extends Phaser.Physics.Arcade.Sprite {
                     this.jump();
                 } else {
                     var x1 = this.scene.roadSlope.body.position.x;
-                    console.log(x1);
                     var x2 = x1 + this.scene.roadSlope.width;
                     var y2 = this.scene.roadSlope.body.position.y;
                     var y1 = y2 + this.scene.roadSlope.body.height;
@@ -138,11 +140,21 @@ export default class extends Phaser.Physics.Arcade.Sprite {
             this.body.setAllowGravity(true);
         }
 
+        /**
+         * Intersects with building 3
+         */
+       if (this._intersectsRectangle(this.getBounds(), this.scene.building3Rectangle)) {
+           this.speed = 125;
+       } else {
+           this.speed = 200;
+       }
+
         return this.body.position.x;
     }
 
     jump() {
         if (this.body.blocked.down) {
+            this.scene.boing.play();
             this.setVelocityY(-400);
         }
     }
@@ -165,5 +177,9 @@ export default class extends Phaser.Physics.Arcade.Sprite {
 
     _intersectsSlopeTriangle(objA, objB) {
         return Phaser.Geom.Intersects.RectangleToTriangle(objA, objB);
+    }
+
+    _intersectsRectangle(objA, objB) {
+        return Phaser.Geom.Intersects.RectangleToRectangle(objA, objB);
     }
 }
