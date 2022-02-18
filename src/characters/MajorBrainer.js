@@ -27,15 +27,15 @@ export default class extends Phaser.Physics.Arcade.Sprite {
         super.preUpdate(time, delta);
     }
 
-    update() {
-        super.update();
+    update(time, delta) {
+        super.update(time, delta);
     }
 
     move(direction) {
         this.setVelocityX(direction * this.speed);
 
         // Animations
-        if (this.body.velocity.x > 0) {
+        if (this.body.velocity.x > 0 && this.body.velocity.y === 0) {
             this.setFlipX(false);
             if (this.scene.xKey.isDown) {
                 (!this.anims.isPlaying || this.anims.key !== 'walk-shoot') &&
@@ -44,7 +44,7 @@ export default class extends Phaser.Physics.Arcade.Sprite {
                 (!this.anims.isPlaying || this.anims.key !== 'walk') &&
                     this.anims.play('walk', true);
             }
-        } else if (this.body.velocity.x < 0) {
+        } else if (this.body.velocity.x < 0 && this.body.velocity.y === 0) {
             this.setFlipX(true);
             if (this.scene.xKey.isDown) {
                 (!this.anims.isPlaying || this.anims.key !== 'walk-shoot') &&
@@ -53,6 +53,22 @@ export default class extends Phaser.Physics.Arcade.Sprite {
                 (!this.anims.isPlaying || this.anims.key !== 'walk') &&
                     this.anims.play('walk', true);
             }
+        } else if (this.body.velocity.y < 0) {
+            if (direction === -1) {
+                this.setFlipX(true);
+            } else if (direction === 1) {
+                this.setFlipX(false);
+            }
+            (!this.anims.isPlaying || this.anims.key !== 'jump') &&
+                            this.anims.play('jump', true);
+        } else if (this.body.velocity.y > 0) {
+            if (direction === -1) {
+                this.setFlipX(true);
+            } else if (direction === 1) {
+                this.setFlipX(false);
+            }
+            (!this.anims.isPlaying || this.anims.key !== 'fall') &&
+                            this.anims.play('fall', true);
         } else {
             if (this.scene.xKey.isDown) {
                 this.anims.play('stop-shoot', true);
@@ -156,6 +172,20 @@ export default class extends Phaser.Physics.Arcade.Sprite {
         if (this.body.blocked.down) {
             this.scene.boing.play();
             this.setVelocityY(-400);
+
+            // if (this.body.velocity.y < 0 ) {
+            //     console.log(this.body.velocity.y);
+            //     (!this.anims.isPlaying || this.anims.key !== 'jump') &&
+            //                 this.anims.play('jump', true);
+            // }
+
+            // if (this.body.velocity.y.xKey < 0) {
+                // (!this.anims.isPlaying || this.anims.key !== 'jump') &&
+                //     this.anims.play('jump', true);
+            // } else {
+            //     (!this.anims.isPlaying || this.anims.key !== 'fall') &&
+            //         this.anims.play('fall', true);
+            // }
         }
     }
 

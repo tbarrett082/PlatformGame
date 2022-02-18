@@ -35,6 +35,18 @@ export default function createAnimations() {
         repeat: 0
     });
     this.anims.create({
+        key: 'jump',
+        frames: this.anims.generateFrameNumbers('major', { frames: [12] }),
+        frameRate: 8,
+        repeat: 0
+    });
+    this.anims.create({
+        key: 'fall',
+        frames: this.anims.generateFrameNumbers('major', { frames: [13] }),
+        frameRate: 8,
+        repeat: 0
+    });
+    this.anims.create({
         key: 'brain-slide',
         frames: this.anims.generateFrameNumbers('mini-brain-slide', { frames: [0, 1] }),
         frameRate: 8,
