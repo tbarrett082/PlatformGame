@@ -59,16 +59,26 @@ export default class extends Phaser.Physics.Arcade.Sprite {
             } else if (direction === 1) {
                 this.setFlipX(false);
             }
-            (!this.anims.isPlaying || this.anims.key !== 'jump') &&
-                            this.anims.play('jump', true);
+            if (this.scene.xKey.isDown) {
+                (!this.anims.isPlaying || this.anims.key !== 'jump-shoot') &&
+                    this.anims.play('jump-shoot', true);
+            } else {
+                (!this.anims.isPlaying || this.anims.key !== 'jump') &&
+                    this.anims.play('jump', true);
+            }
         } else if (this.body.velocity.y > 0) {
             if (direction === -1) {
                 this.setFlipX(true);
             } else if (direction === 1) {
                 this.setFlipX(false);
             }
-            (!this.anims.isPlaying || this.anims.key !== 'fall') &&
-                            this.anims.play('fall', true);
+            if (this.scene.xKey.isDown) {
+                (!this.anims.isPlaying || this.anims.key !== 'fall-shoot') &&
+                    this.anims.play('fall-shoot', true);
+            } else {
+                (!this.anims.isPlaying || this.anims.key !== 'fall') &&
+                    this.anims.play('fall', true);
+            }
         } else {
             if (this.scene.xKey.isDown) {
                 this.anims.play('stop-shoot', true);
@@ -159,11 +169,11 @@ export default class extends Phaser.Physics.Arcade.Sprite {
         /**
          * Intersects with building 3
          */
-       if (this._intersectsRectangle(this.getBounds(), this.scene.building3Rectangle)) {
-           this.speed = 125;
-       } else {
-           this.speed = 200;
-       }
+        if (this._intersectsRectangle(this.getBounds(), this.scene.building3Rectangle)) {
+            this.speed = 125;
+        } else {
+            this.speed = 200;
+        }
 
         return this.body.position.x;
     }
@@ -180,8 +190,8 @@ export default class extends Phaser.Physics.Arcade.Sprite {
             // }
 
             // if (this.body.velocity.y.xKey < 0) {
-                // (!this.anims.isPlaying || this.anims.key !== 'jump') &&
-                //     this.anims.play('jump', true);
+            // (!this.anims.isPlaying || this.anims.key !== 'jump') &&
+            //     this.anims.play('jump', true);
             // } else {
             //     (!this.anims.isPlaying || this.anims.key !== 'fall') &&
             //         this.anims.play('fall', true);

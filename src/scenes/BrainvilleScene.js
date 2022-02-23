@@ -289,9 +289,14 @@ export default class BrainvilleScene extends Phaser.Scene {
     }
 
     async _shootBullet() {
-        var bullet = new Bullet(this, 0, 0);
-        bullet.fire(this.major.x + 30, this.major.y - 15);
-        this.shotCount += 1;
+        this.bullet = new Bullet(this, 0, 0);
+        if (this.major.flipX === false) {
+            this.bullet.fire(this.major.x + 30, this.major.y - 15);
+            this.shotCount += 1;
+        } else {
+            this.bullet.fire(this.major.x - 30, this.major.y - 15);
+            this.shotCount += 1;
+        }
 
         var glockShot = this.sound.add('glock-shot', { volume: 0.15 });
         glockShot.play();

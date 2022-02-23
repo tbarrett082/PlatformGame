@@ -35,6 +35,18 @@ export default function createAnimations() {
         repeat: 0
     });
     this.anims.create({
+        key: 'jump-shoot',
+        frames: this.anims.generateFrameNumbers('major', { frames: [14] }),
+        frameRate: 8,
+        repeat: 0
+    });
+    this.anims.create({
+        key: 'fall-shoot',
+        frames: this.anims.generateFrameNumbers('major', { frames: [15] }),
+        frameRate: 8,
+        repeat: 0
+    });
+    this.anims.create({
         key: 'jump',
         frames: this.anims.generateFrameNumbers('major', { frames: [12] }),
         frameRate: 8,
@@ -71,5 +83,12 @@ export default function createAnimations() {
         frames: this.anims.generateFrameNumbers('brain-cop-1', { frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }),
         frameRate: 10,
         repeat: -1,
+    });
+
+    this.anims.create({
+        key: 'brain-cop-1-shot',
+        frames: this.anims.generateFrameNumbers('brain-cop-1', { frames: [11, 12, 13, 14] }),
+        frameRate: 8,
+        repeat: 0,
     });
 }
