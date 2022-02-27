@@ -127,7 +127,7 @@ export default class BrainvilleScene extends Phaser.Scene {
          */
         var brainvilleSong = this.sound.add('welcome-to-brainville', { loop: true, seek: 13.689 });
         this.boing = this.sound.add('boing');
-        brainvilleSong.play({seek: 13.689});
+        // brainvilleSong.play({seek: 13.689});
 
 
         // Load the keyboard keys
