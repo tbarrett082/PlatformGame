@@ -30,6 +30,8 @@ class BrainCop1 extends Phaser.Physics.Arcade.Sprite {
 
         //Maintain shot count here
         this.shotCount = 0;
+        this.nextShot = 700;
+        this.fireRate = 1400;
 
         scene.physics.add.collider(this, scene.platforms);
         scene.physics.add.collider(this, scene.building3Platforms);
@@ -38,6 +40,7 @@ class BrainCop1 extends Phaser.Physics.Arcade.Sprite {
 
         // Events
         this.on('GOT_SHOT', this._getShot);
+        this.on('SHOOT', this._shoot);
         this.on('MOVE_TO_HERO', this._move);
         this.on('STOP', this._stop);
         this.on('DIE', this._die);
@@ -49,6 +52,11 @@ class BrainCop1 extends Phaser.Physics.Arcade.Sprite {
         if (this.scene.physics.overlap(this, this.scene.bullet)) {
             this.emit('GOT_SHOT');
         } else if (Phaser.Math.Distance.Between(this.scene.major.x, this.scene.major.y, this.x, this.y) < 400) {
+            if (this.nextShot < this.scene.time.now && 
+                ((this.scene.major.body.y <= this.body.y + 5) &&
+                (this.scene.major.body.y >= this.body.y - 5))) {
+                this.emit('SHOOT');
+            }
             this.emit('MOVE_TO_HERO');
         } else {
             this.emit('STOP');
@@ -76,10 +84,14 @@ class BrainCop1 extends Phaser.Physics.Arcade.Sprite {
         this.body.velocity.x = 0;
         this.off('MOVE_TO_HERO');
         this.off('STOP');
-        this.anims.play('brain-cop-1-shot', true);
+        this.off('SHOOT');
+        (!this.anims.isPlaying || this.anims.key !== 'brain-cop-1-shot') &&
+            this.anims.play('brain-cop-1-shot', true);
         this.on('animationcomplete-brain-cop-1-shot', function () {
             this.on('MOVE_TO_HERO', this._move);
             this.on('STOP', this._stop);
+            this.on('SHOOT', this._shoot);
+            this.nextShot = this.scene.time.now + 1000;
         }, this);
         this.shotCount += 1;
     }
@@ -87,13 +99,10 @@ class BrainCop1 extends Phaser.Physics.Arcade.Sprite {
     _move() {
         if (this.scene.major.x < this.x) {
             this.body.setVelocityX(-100);
-
             this.setFlipX(false);
-
         } else if (this.scene.major.x > this.x) {
 
             this.setFlipX(true);
-
             this.body.setVelocityX(100);
         }
 
@@ -108,6 +117,20 @@ class BrainCop1 extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    _shoot() {
+        this.body.setVelocityX(0);
+        this.off('MOVE_TO_HERO');
+        this.off('STOP');
+        (!this.anims.isPlaying || this.anims.key !== 'brain-cop-1-shoot') &&
+            this.anims.play('brain-cop-1-shoot', true);
+
+        this.on('animationcomplete-brain-cop-1-shoot', function () {
+            this.on('MOVE_TO_HERO', this._move);
+            this.on('STOP', this._stop);
+            this.nextShot = this.scene.time.now + this.fireRate;
+        }, this);
+    }
+
     _stop() {
         this.body.setVelocityX(0);
         this.anims.play('brain-cop-1-stop', false);
@@ -115,8 +138,11 @@ class BrainCop1 extends Phaser.Physics.Arcade.Sprite {
 
     _die() {
         this.body.setVelocityX(0);
+        this.off('MOVE_TO_HERO');
+        this.off('GOT_SHOT');
+        this.off('STOP');
         (!this.anims.isPlaying || this.anims.key !== 'brain-cop-1-die') &&
-                this.anims.play('brain-cop-1-die', true);
+            this.anims.play('brain-cop-1-die', true);
         this.on('animationcomplete-brain-cop-1-die', function () {
             this._dead();
         });
@@ -125,9 +151,6 @@ class BrainCop1 extends Phaser.Physics.Arcade.Sprite {
     _dead() {
         this.anims.play('brain-cop-1-dead', true);
         this.off('DIE');
-        this.off('MOVE_TO_HERO');
-        this.off('GOT_SHOT');
-        this.off('STOP');
         this.setActive(false);
     }
 }

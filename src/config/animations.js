@@ -93,6 +93,13 @@ export default function createAnimations() {
     });
 
     this.anims.create({
+        key: 'brain-cop-1-shoot',
+        frames: this.anims.generateFrameNumbers('brain-cop-1', { frames: [10] }),
+        frameRate: 8,
+        repeat:4,
+    });
+
+    this.anims.create({
         key: 'brain-cop-1-die',
         frames: this.anims.generateFrameNumbers('brain-cop-1', { frames: [15, 16, 17, 18, 19, 20, 21, 22, 23, 24] }),
         frameRate: 10,
