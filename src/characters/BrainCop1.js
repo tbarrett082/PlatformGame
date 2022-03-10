@@ -53,8 +53,8 @@ class BrainCop1 extends Phaser.Physics.Arcade.Sprite {
             this.emit('GOT_SHOT');
         } else if (Phaser.Math.Distance.Between(this.scene.major.x, this.scene.major.y, this.x, this.y) < 400) {
             if (this.nextShot < this.scene.time.now && 
-                ((this.scene.major.body.y <= this.body.y + 5) &&
-                (this.scene.major.body.y >= this.body.y - 5))) {
+                ((this.scene.major.body.y <= this.body.y + 25) &&
+                (this.scene.major.body.y >= this.body.y - 25))) {
                 this.emit('SHOOT');
             }
             this.emit('MOVE_TO_HERO');

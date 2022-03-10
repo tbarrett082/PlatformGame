@@ -182,20 +182,6 @@ export default class extends Phaser.Physics.Arcade.Sprite {
         if (this.body.blocked.down) {
             this.scene.boing.play();
             this.setVelocityY(-400);
-
-            // if (this.body.velocity.y < 0 ) {
-            //     console.log(this.body.velocity.y);
-            //     (!this.anims.isPlaying || this.anims.key !== 'jump') &&
-            //                 this.anims.play('jump', true);
-            // }
-
-            // if (this.body.velocity.y.xKey < 0) {
-            // (!this.anims.isPlaying || this.anims.key !== 'jump') &&
-            //     this.anims.play('jump', true);
-            // } else {
-            //     (!this.anims.isPlaying || this.anims.key !== 'fall') &&
-            //         this.anims.play('fall', true);
-            // }
         }
     }
 
