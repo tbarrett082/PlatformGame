@@ -80,6 +80,7 @@ class BrainCop1 extends Phaser.Physics.Arcade.Sprite {
     }
 
     _getShot() {
+        //What
         this.scene.bullet.destroy();
         this.body.velocity.x = 0;
         this.off('MOVE_TO_HERO');

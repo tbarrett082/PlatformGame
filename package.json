@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.7",
+    "build": "^0.1.4",
     "heroku": "^7.60.0",
     "phaser": "^3.50.0",
     "phaser3-plugin-isometric": "^0.0.7",
