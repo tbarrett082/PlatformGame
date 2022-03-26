@@ -1,1 +1,2 @@
-web: npm build
+web: npm run heroku-prebuild
+web: npm run start
