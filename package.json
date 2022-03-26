@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack/prod.js ",
     "heroku-prebuild": "npm install --dev",
-    "start": "node --max_old_space_size=2560 webpack-dev-server --config webpack/base.js --open"
+    "start": "node --max_old_space_size=2560 node_modules/.bin/webpack-dev-server --config webpack/base.js --open"
   },
   "repository": {
     "type": "git",
