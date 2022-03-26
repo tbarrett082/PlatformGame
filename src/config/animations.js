@@ -112,4 +112,32 @@ export default function createAnimations() {
         frameRate: 1,
         repeat: -1,
     });
+
+    this.anims.create({
+        key: 'music-button-open',
+        frames: this.anims.generateFrameNumbers('music-button', { frames: [0] }),
+        frameRate: 1,
+        repeat: -1,
+    });
+
+    this.anims.create({
+        key: 'music-button-closed',
+        frames: this.anims.generateFrameNumbers('music-button', { frames: [2] }),
+        frameRate: 1,
+        repeat: -1,
+    });
+
+    this.anims.create({
+        key: 'music-button-open-hover',
+        frames: this.anims.generateFrameNumbers('music-button', { frames: [1] }),
+        frameRate: 1,
+        repeat: -1,
+    });
+
+    this.anims.create({
+        key: 'music-button-closed-hover',
+        frames: this.anims.generateFrameNumbers('music-button', { frames: [3] }),
+        frameRate: 1,
+        repeat: -1,
+    });
 }
