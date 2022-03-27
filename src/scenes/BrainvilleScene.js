@@ -13,6 +13,7 @@ export default class BrainvilleScene extends Phaser.Scene {
     constructor() {
         super();
         this.shotCount = 0;
+        this.musicButtonClicked = false;
     }
 
     preload() {
@@ -23,8 +24,9 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.load.spritesheet('major', 'assets/images/major-brainer-walk-anim.png', { frameWidth: 64, frameHeight: 96 });
         this.load.spritesheet('major-shoot', 'assets/images/major-brainer-walk-shoot.png', { frameWidth: 64, frameHeight: 96 });
         this.load.spritesheet('mini-brain-slide', 'assets/images/mini-brain-move-anim.png', { frameWidth: 16, frameHeight: 14 });
-        this.load.spritesheet('cop-car', 'assets/images/spritesheets/cop-car-Sheet.png', {frameWidth: 256, frameHeight: 103});
-        this.load.spritesheet('brain-cop-1', 'assets/images/spritesheets/brain-cop-1-Sheet.png', {frameWidth: 24, frameHeight: 47});
+        this.load.spritesheet('cop-car', 'assets/images/spritesheets/cop-car-Sheet.png', { frameWidth: 256, frameHeight: 103 });
+        this.load.spritesheet('brain-cop-1', 'assets/images/spritesheets/brain-cop-1-Sheet.png', { frameWidth: 24, frameHeight: 47 });
+        this.load.spritesheet('music-button', "assets/images/HUD/Music-Sheet.png", { frameWidth: 64, frameHeight: 64 });
 
         //Load Tilemaps
         this.load.tilemapTiledJSON('street-map', 'assets/tilemaps/Street.json');
@@ -103,7 +105,7 @@ export default class BrainvilleScene extends Phaser.Scene {
         platformMap.createLayer('concrete-wall', wallTileset, 0, streetPositionYPlatform - 16);
         platformMap.createLayer('trees-front', bushTileset, 0, streetPositionYPlatform - 48);
         this.building3Layer = platformMap.createLayer('building-3-inside', building3InsideTileset, 0, streetPositionYPlatform);
-        this.building3Rectangle = new Phaser.Geom.Rectangle (
+        this.building3Rectangle = new Phaser.Geom.Rectangle(
             4896, this.physics.world.bounds.top,
             767, 1800
         );
@@ -125,10 +127,14 @@ export default class BrainvilleScene extends Phaser.Scene {
         /**
          * Create audio
          */
-        var brainvilleSong = this.sound.add('welcome-to-brainville', { loop: true, seek: 13.689 });
+        this.brainvilleSong = this.sound.add('welcome-to-brainville', { loop: true, seek: 13.689 });
         this.boing = this.sound.add('boing');
-        brainvilleSong.play({seek: 13.689});
+        this.brainvilleSong.play({ seek: 13.689 });
 
+        /**
+         * Create HUD
+         */
+        this._createHud(this);
 
         // Load the keyboard keys
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -156,7 +162,7 @@ export default class BrainvilleScene extends Phaser.Scene {
         var copCar = this.add.sprite(data.copCar1.x, data.copCar1.y, 'cop-car').setOrigin(0, 0);
         copCar.anims.play('cop-car', true);
 
-        this.copCarBody = new Phaser.GameObjects.Rectangle (
+        this.copCarBody = new Phaser.GameObjects.Rectangle(
             this,
             data.copCar1.x + 110, data.copCar1.y + 65,
             200, 75,
@@ -184,7 +190,7 @@ export default class BrainvilleScene extends Phaser.Scene {
          */
         var brainCop1Positions = data.brainCop1;
         this.brainCops1.init(brainCop1Positions.length);
-        brainCop1Positions.forEach(function (obj) {this.brainCops1.startBrainCop(obj.x, obj.y) }, this);
+        brainCop1Positions.forEach(function (obj) { this.brainCops1.startBrainCop(obj.x, obj.y) }, this);
 
     }
 
@@ -251,7 +257,7 @@ export default class BrainvilleScene extends Phaser.Scene {
             1344 + this.roadSlope4.height,
             7803 + this.roadSlope4.width,
             1344);
-            
+
 
         this.roadFlat4 = this.physics.add.sprite(8086, 1345, 'road-flat-4').setOrigin(0, 0);
         this.roadFlat4.body.setImmovable(true);
@@ -300,5 +306,48 @@ export default class BrainvilleScene extends Phaser.Scene {
 
         var glockShot = this.sound.add('glock-shot', { volume: 0.15 });
         glockShot.play();
+    }
+
+    _createHud() {
+        this.musicButton = this.add.sprite(880, 25, 'music-button').setOrigin(0, 0).setScrollFactor(0).setScale(0.85);
+        this.musicButton.setInteractive()
+            .on('pointerdown', () => this._actionOnClick())
+            .on('pointerover', () => this._hoverOverMusic())
+            .on('pointerout', () => this._exitHoverOverMusic());
+    }
+
+    _actionOnClick() {
+        console.log("clicked!");
+        this.musicButtonClicked = !this.musicButtonClicked;
+        if (this.musicButtonClicked) {
+            this.brainvilleSong.pause();
+            (!this.musicButton.anims.isPlaying || this.anims.key !== 'music-button-closed') &&
+                this.musicButton.anims.play('music-button-closed', true);
+        } else {
+            this.brainvilleSong.resume();
+            (!this.musicButton.anims.isPlaying || this.anims.key !== 'music-button-open') &&
+                this.musicButton.anims.play('music-button-open', true);
+        }
+    }
+
+    _hoverOverMusic() {
+        if (this.musicButtonClicked) {
+            (!this.musicButton.anims.isPlaying || this.anims.key !== 'music-button-closed-hover') &&
+                this.musicButton.anims.play('music-button-closed-hover', true);
+        } else {
+            (!this.musicButton.anims.isPlaying || this.anims.key !== 'music-button-open-hover') &&
+                this.musicButton.anims.play('music-button-open-hover', true);
+        }
+    }
+
+    _exitHoverOverMusic() {
+        if (this.musicButtonClicked) {
+            (!this.musicButton.anims.isPlaying || this.anims.key !== 'music-button-closed') &&
+                this.musicButton.anims.play('music-button-closed', true);
+        } else {
+            (!this.musicButton.anims.isPlaying || this.anims.key !== 'music-button-open') &&
+                this.musicButton.anims.play('music-button-open', true);
+        }
+
     }
 }

@@ -13,6 +13,8 @@ export default {
             arcade: {debug: true}
         }
     },
+    // Heroku sucks
+    
     plugins: {
         global: [{
             key: 'rexTextPlayerPlugin',

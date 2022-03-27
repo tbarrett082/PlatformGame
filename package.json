@@ -5,9 +5,14 @@
   "main": "src/index.js",
   "scripts": {
     "build": "webpack --config webpack/prod.js ",
+<<<<<<< HEAD
     "dev": "webpack-dev-server --config webpack/base.js --open",
     "install": "webpack -p",
     "start": "node server.js"
+=======
+    "start": "node --optimize_for_size --max_old_space_size=460 node_modules/.bin/webpack-dev-server --config webpack/base.js --open",
+    "start-prod": "node --optimize_for_size --max_old_space_size=460 node_modules/.bin/webpack-dev-server --config webpack/prod.js --open"
+>>>>>>> 948991190f8c0c7c8e03fbbf7e26ae9fb4331e1b
   },
   "repository": {
     "type": "git",
@@ -37,7 +42,12 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.7",
+<<<<<<< HEAD
     "express": "^4.17.3",
+=======
+    "build": "^0.1.4",
+    "heroku": "^7.60.0",
+>>>>>>> 948991190f8c0c7c8e03fbbf7e26ae9fb4331e1b
     "phaser": "^3.50.0",
     "phaser3-plugin-isometric": "^0.0.7",
     "phaser3-rex-plugins": "^1.1.65"
