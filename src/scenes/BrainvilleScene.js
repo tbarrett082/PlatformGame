@@ -46,7 +46,7 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.load.image('background', 'assets/images/background1.png');
         this.load.image('tree-city-background', 'assets/images/TreeCityBackground2.png');
         this.load.image('bridge', 'assets/images/Bridge.png');
-        this.load.image('bullet', 'assets/images/bullet.png');
+        this.load.image('bullet', 'assets/images/Bullet.png');
         this.load.image('nsx', 'assets/images/nsx.png');
 
         // Load Street Slope sprites
