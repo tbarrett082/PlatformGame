@@ -62,7 +62,7 @@ export default class BrainvilleScene extends Phaser.Scene {
 
         //Load Audio
         this.load.audio('welcome-to-brainville', 'assets/audio/Welcome to brainville.wav');
-        this.load.audio('welcome-to-china-town', 'assets/audio/welcome to china town 2.wav');
+        // this.load.audio('welcome-to-china-town', 'assets/audio/welcome to china town 2.wav');
         this.load.audio('glock-shot', 'assets/audio/Glock-2.wav');
         this.load.audio('boing', 'assets/audio/boing.wav');
     }
