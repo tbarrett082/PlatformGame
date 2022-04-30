@@ -17,6 +17,19 @@ export default class BrainvilleScene extends Phaser.Scene {
     }
 
     preload() {
+        //Load Screen
+        var progressBar = this.add.graphics();
+        var progressBox = this.add.graphics();
+        progressBox.fillStyle(0x222222, 0.8);
+        progressBox.fillRect(240, 270, 320, 50);
+
+        this.load.on('progress', function (value) {
+            console.log(value);
+            progressBar.clear();
+            progressBar.fillStyle(0xffffff, 1);
+            progressBar.fillRect(250, 280, 300 * value, 30);
+        })
+
         // Game properties
         this.physics.world.setBounds(0, 0, 15000, 1800);
 
