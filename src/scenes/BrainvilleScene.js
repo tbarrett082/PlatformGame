@@ -21,9 +21,9 @@ export default class BrainvilleScene extends Phaser.Scene {
         var width = this.cameras.main.width;
         var height = this.cameras.main.height;
         var progBarWidth = (width / 2) - 140;
-        var progBarHeight = (height / 2) + 30;
+        var progBarHeight = (height / 2) - 20;
         var progBoxWidth = (width / 2) - 150;
-        var progBoxHeight = (height / 2) + 20
+        var progBoxHeight = (height / 2) - 30;
         var progressBar = this.add.graphics();
         var progressBox = this.add.graphics();
         progressBox.fillStyle(0x222222, 0.8);
