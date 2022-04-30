@@ -18,20 +18,61 @@ export default class BrainvilleScene extends Phaser.Scene {
 
     preload() {
         //Load Screen
+        var width = this.cameras.main.width;
+        var height = this.cameras.main.height;
+        var progBarWidth = (width / 2) - 140;
+        var progBarHeight = (height / 2) + 30;
+        var progBoxWidth = (width / 2) - 150;
+        var progBoxHeight = (height / 2) + 20
         var progressBar = this.add.graphics();
         var progressBox = this.add.graphics();
         progressBox.fillStyle(0x222222, 0.8);
-        progressBox.fillRect(240, 270, 320, 50);
+        progressBox.fillRect(progBoxWidth, progBoxHeight, 320, 50);
+
+        var loadingText = this.make.text({
+            x: width / 2,
+            y: height / 2 - 50,
+            text: 'Loading...',
+            style: {
+                font: '20px monospace',
+                fill: '#ffffff'
+            }
+        })
+        loadingText.setOrigin(0.5, 0.5);
+
+        var percentText = this.make.text({
+            x: width / 2,
+            y: height / 2 - 5,
+            text: '0%',
+            style: {
+                font: '18px monospace',
+                fill: '#ffffff'
+            }
+        });
+        percentText.setOrigin(0.5, 0.5);
 
         this.load.on('progress', function (value) {
             console.log(value);
+            percentText.setText(parseInt(value * 100) + '%');
             progressBar.clear();
             progressBar.fillStyle(0xffffff, 1);
-            progressBar.fillRect(250, 280, 300 * value, 30);
+            progressBar.fillRect(progBarWidth, progBarHeight, 300 * value, 30);
+        })
+
+        this.load.on('complete', function () {
+            console.log('complete');
+            progressBar.destroy();
+            progressBox.destroy();
+            loadingText.destroy();
         })
 
         // Game properties
         this.physics.world.setBounds(0, 0, 15000, 1800);
+
+         //Load Audio
+         this.load.audio('welcome-to-brainville', 'assets/audio/Welcome to brainville.wav');
+         this.load.audio('glock-shot', 'assets/audio/Glock-2.wav');
+         this.load.audio('boing', 'assets/audio/boing.wav');
 
         // Load Spritesheets
         this.load.spritesheet('major', 'assets/images/major-brainer-walk-anim.png', { frameWidth: 64, frameHeight: 96 });
@@ -73,11 +114,6 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.load.image('road-slope-4', 'assets/images/road-slope/road-slope-4.png');
         this.load.image('road-slope-under', 'assets/images/road-slope/road-slope-under.png');
 
-        //Load Audio
-        this.load.audio('welcome-to-brainville', 'assets/audio/Welcome to brainville.wav');
-        // this.load.audio('welcome-to-china-town', 'assets/audio/welcome to china town 2.wav');
-        this.load.audio('glock-shot', 'assets/audio/Glock-2.wav');
-        this.load.audio('boing', 'assets/audio/boing.wav');
     }
 
     create() {
