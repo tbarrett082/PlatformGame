@@ -102,6 +102,7 @@ export default class BrainvilleScene extends Phaser.Scene {
         this.load.image('bridge', 'assets/images/Bridge.png');
         this.load.image('bullet', 'assets/images/Bullet.png');
         this.load.image('nsx', 'assets/images/nsx.png');
+        this.load.image('HealthAmmo', 'assets/images/HUD/HealthBullet.png');
 
         // Load Street Slope sprites
         this.load.image('road-flat-1', 'assets/images/road-flat-1.png');
@@ -358,6 +359,11 @@ export default class BrainvilleScene extends Phaser.Scene {
     }
 
     _createHud() {
+        //Health
+        this.heart = this.add.image(40, 25, 'HealthAmmo').setOrigin(0, 0).setScrollFactor(0);
+
+
+        //Music Button
         this.musicButton = this.add.sprite(880, 25, 'music-button').setOrigin(0, 0).setScrollFactor(0).setScale(0.85);
         this.musicButton.setInteractive()
             .on('pointerdown', () => this._actionOnClick())
